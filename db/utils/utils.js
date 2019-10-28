@@ -11,6 +11,14 @@ exports.formatDates = list => {
 
 const date = new Date(1542284514171)
 
-exports.makeRefObj = list => {};
+exports.makeRefObj = list => {
+    const newObj = {}
+
+    list.forEach(article => {
+        newObj[article.article_id] = article.title
+    })
+
+    return newObj
+};
 
 exports.formatComments = (comments, articleRef) => {};
