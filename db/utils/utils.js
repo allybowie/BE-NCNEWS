@@ -1,7 +1,7 @@
 exports.formatDates = list => {
     return list.map(object => {
         let newObj = {...object}
-        let newTime = new Date(object.created_at).toLocaleString()
+        let newTime = new Date(object.created_at)
         // console.log(newTime)
         newObj.created_at = newTime
         return newObj
@@ -24,7 +24,7 @@ exports.formatComments = (comments, articleRef) => {
         let newObj = {...comment};
 
         newObj.author = comment.created_by;
-        newObj.created_at = new Date(comment.created_at).toLocaleString();
+        newObj.created_at = new Date(comment.created_at);
         newObj.article_id = articleRef[comment.belongs_to]
 
         delete newObj.created_by;
