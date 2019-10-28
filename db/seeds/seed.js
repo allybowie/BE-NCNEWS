@@ -27,7 +27,7 @@ exports.seed = function(knex) {
     })
     .then(articleRows => {
 
-      console.log("Successfully seeded comments")
+      console.log("Successfully seeded Topics, Users, Articles and Comments!")
       const articleRef = makeRefObj(articleRows);
       const formattedComments = formatComments(commentData, articleRef);
       return knex('comments').insert(formattedComments)
