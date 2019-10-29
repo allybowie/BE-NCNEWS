@@ -95,6 +95,76 @@ describe("/api", () => {
         })
     });
   });
+
+  describe.only('/api/articles/:article_id/comments', () => {
+    it('GET 200 - returns an array of comments when valid article id is input', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body: { comments }}) => {
+          expect(comments).to.be.an("array")
+          comments.forEach(comment => {
+            expect(comment).to.have.keys("comment_id", "votes", "created_at", "author", "body")
+          })
+          expect(comments.length).to.equal(13)
+        })
+    });
+    it('GET 200 - returns an array of comments sorted by "created_at", in ascending order', () => {
+      return request(app)
+        .get('/api/articles/1/comments?sort_by=created_at&&order=asc')
+        .expect(200)
+        .then(({body: { comments }}) => {
+          expect(comments).to.be.an("array")
+          expect(comments.length).to.equal(13)
+          expect(comments[12]).to.eql({
+            comment_id: 2,
+            votes: 14,
+            created_at: '2016-11-22T12:36:03.389Z',
+            author: 'butter_bridge',
+            body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.'
+          })
+        })
+    });
+    it('GET 200 - returns an array of comments sorted by "votes", in ascending order', () => {
+      return request(app)
+        .get('/api/articles/1/comments?sort_by=votes&&order=asc')
+        .expect(200)
+        .then(({body: { comments }}) => {
+          expect(comments).to.be.an("array")
+          expect(comments.length).to.equal(13)
+          expect(comments[12]).to.eql({
+            comment_id: 3,
+            votes: 100,
+            created_at: '2015-11-23T12:36:03.389Z',
+            author: 'icellusedkars',
+            body: 'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.'
+          })
+          expect(comments[0]).to.eql({
+            comment_id: 4,
+            votes: -100,
+            created_at: '2014-11-23T12:36:03.389Z',
+            author: 'icellusedkars',
+            body: ' I carry a log — yes. Is it funny to you? It is not to me.'
+          })
+        })
+    });
+    it('GET 404 - returns an error when given an article ID that does not exist', () => {
+      return request(app)
+        .get('/api/articles/29/comments')
+        .expect(404)
+        .then(({body: { msg }}) => {
+          expect(msg).to.equal("Article with ID '29' does not exist!")
+        })
+    });
+    it('GET 400 - returns an error when given an invalid article ID', () => {
+      return request(app)
+        .get('/api/articles/jimmyhavoc/comments')
+        .expect(400)
+        .then(({body: { msg }}) => {
+          expect(msg).to.equal('Invalid input type - Text')
+        })
+    });
+  });
   
 
   //GET Users

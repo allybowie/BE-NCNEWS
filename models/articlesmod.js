@@ -47,14 +47,11 @@ exports.selectArticleByID = article_id => {
   .where('article_id', '=', id)
   .returning("*")
   
-
   const promise = Promise.all([article, comments]);
 
-  
-
   return promise.then(([article, comments]) => {
-
-    if(!article){
+    console.log(article)
+    if(article.length=0){
       console.log("NO SUCH ARTICLE")
       return Promise.reject({
         status : 404,

@@ -23,10 +23,5 @@ app.use((err, req, res, next) => {
 });
 
 
-const psqlErrors = function(err) {
-
-  return err.split(' - ')[1]
-}
-
 
 module.exports = app;
