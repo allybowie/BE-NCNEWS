@@ -52,4 +52,17 @@ describe("/api", () => {
         });
     });
   });
+
+  //GET Users
+  describe.only("/api/users/:username", () => {
+    it("GET: 200 - returns an individual username", () => {
+      return request(app)
+        .get('/api/users/lurker')
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).to.be.an("object");
+          expect(user).to.have.keys('username', 'name', 'avatar_url');
+        });
+    });
+  });
 });

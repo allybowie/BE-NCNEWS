@@ -122,7 +122,7 @@ Utilising your data manipulation skills, you will also need to complete the util
 Your server _must_ have the following endpoints:
 
 ```http
-GET /api/topics
+GET /api/topics     //done
 
 GET /api/users/:username
 
@@ -132,7 +132,7 @@ PATCH /api/articles/:article_id
 POST /api/articles/:article_id/comments
 GET /api/articles/:article_id/comments
 
-GET /api/articles
+GET /api/articles    //done
 
 PATCH /api/comments/:comment_id
 DELETE /api/comments/:comment_id
