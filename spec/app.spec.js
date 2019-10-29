@@ -38,19 +38,22 @@ describe("/api", () => {
         .then(({ body: { articles } }) => {
           expect(articles).to.be.an("array");
           expect(articles.length).to.equal(12);
+          const testArticle = articles.find(element => {
+            return element.article_id === 1
+          })
+          expect(testArticle.comment_count).to.equal('13')
           articles.forEach(article => {
             expect(article).to.have.keys([
               "title",
               "article_id",
               "author",
               "topic",
+              "body",
               "created_at",
               "votes",
               "comment_count"
             ]);
           });
-          expect(articles[0].comment_count).to.equal(13);
-          expect(articles[5].comment_count).to.equal(1);
         });
     });
   });
@@ -64,16 +67,7 @@ describe("/api", () => {
         .then(({ body: { article } }) => {
           expect(article).to.be.an("object");
           expect(article).to.have.keys('author', 'title', 'article_id', 'body', 'topic', 'created_at', 'votes', 'comment_count' );
-          expect(article).to.eql({
-            title: 'Living in the shadow of a great man',
-            author: 'butter_bridge',
-            article_id: 1,
-            body: 'I find this existence challenging',
-            topic: 'mitch',
-            created_at: '2018-11-15T12:21:54.171Z',
-            votes: 100,
-            comment_count: 13
-          })
+          expect(article.comment_count).to.equal('13')
         });
     });
   })
@@ -96,7 +90,7 @@ describe("/api", () => {
     });
   });
 
-  describe.only('/api/articles/:article_id/comments', () => {
+  describe('/api/articles/:article_id/comments', () => {
     it('GET 200 - returns an array of comments when valid article id is input', () => {
       return request(app)
         .get('/api/articles/1/comments')
