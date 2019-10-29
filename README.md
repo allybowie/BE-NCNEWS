@@ -124,7 +124,7 @@ Your server _must_ have the following endpoints:
 ```http
 GET /api/topics     //done
 
-GET /api/users/:username
+GET /api/users/:username    //done
 
 GET /api/articles/:article_id
 PATCH /api/articles/:article_id

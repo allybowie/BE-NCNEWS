@@ -1,5 +1,6 @@
 const express = require("express");
-const apiRouter = require("./routers/apirouter")
+const apiRouter = require("./routers/apirouter");
+const errRef = require('./psqlerrorlist')
 
 const app = express();
 
@@ -10,8 +11,22 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
+  if(err.code){
+    console.log(errRef)
+    console.log(err.code)
+   res.status(errRef[err.code].code).send({msg: errRef[err.code].message})
+  } else (next(err))
+})
+
+app.use((err, req, res, next) => {
   res.status(err.status).send({ msg: err.msg });
 });
+
+
+const psqlErrors = function(err) {
+
+  return err.split(' - ')[1]
+}
 
 
 module.exports = app;
