@@ -1,4 +1,4 @@
-const {selectComments , removeComment} = require('../models/commentsmod')
+const {selectComments , removeComment , updateVotes} = require('../models/commentsmod')
 
 exports.getComments = (req,res,next) => {
     const {sort_by , order} = req.query
@@ -11,8 +11,15 @@ exports.getComments = (req,res,next) => {
 exports.deleteComment = (req, res, next) => {
     const {comment_id} = req.params
     return removeComment(comment_id).then((response) => {
-        console.log(response)
-        console.log("Successfully deleted")
         res.sendStatus(204)
+    }).catch(next)
+}
+
+exports.patchComment = (req, res, next) => {
+    const {comment_id} = req.params
+    const {inc_votes} = req.body
+    return updateVotes(comment_id , inc_votes).then(updatedComment => {
+        const comment = updatedComment[0]
+        res.status(200).send({comment})
     }).catch(next)
 }

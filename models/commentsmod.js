@@ -36,3 +36,31 @@ exports.removeComment = inputID => {
         }
             })
 }
+
+
+exports.updateVotes = (inputID, votesUpdate) => {
+    let locatedComment = connection.select("*").from('comments').where('comment_id', '=', inputID).returning("*")
+
+    if(!votesUpdate) {
+        return Promise.reject({
+            status : 400,
+            msg : `Invalid request format; please submit 'inc_votes'.`
+        })
+    }
+
+    return locatedComment.then(comment => {
+        if(comment.length){
+        return connection('comments')
+        .where('comment_id', '=', inputID)
+        .update({votes : comment[0].votes + votesUpdate})
+        .returning("*")
+        } else {
+            return Promise.reject({
+                status : 404,
+                msg : `Comment with ID '${inputID}' does not exist!`
+            })
+        }
+    })
+    
+
+}

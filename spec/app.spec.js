@@ -162,8 +162,108 @@ describe("/api", () => {
     });
   });
 
-  //DELETE Comments
+
+  //PATCH Comments
   describe.only('/api/comments/:comment_id', () => {
+    it('PATCH 200 - uppdates the comment count and responds with the full, updated comment', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { comment } }) => {
+        expect(comment).to.be.an("object")
+      })
+    });
+    it('PATCH 200 - returns an updated object with the correct keys', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { comment } }) => {
+        expect(comment).to.have.keys("comment_id", "author", "article_id", "votes", "created_at", "body")
+      })
+    });
+    it('PATCH 200 - returns an updated object with the correct keys and the correctly updated key', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { comment } }) => {
+        expect(comment.votes).to.have.equal(15)
+      })
+    });
+    it('PATCH 200 - returns an updated object with unaltered keys returned unedited', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { comment } }) => {
+        expect(comment).to.eql({
+          comment_id: 2,
+          author: 'butter_bridge',
+          article_id: 1,
+          votes: 15,
+          created_at: '2016-11-22T12:36:03.389Z',
+          body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.'
+        })
+      })
+    });
+    it("PATCH 404 - returns a 404 error when attempting to update a comment that doesn't exist", () => {
+      return request(app)
+      .patch('/api/comments/78')
+      .send({
+        inc_votes : 1
+      })
+      .expect(404)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Comment with ID '78' does not exist!")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update an invalid data-type (ie. comment ID is text", () => {
+      return request(app)
+      .patch('/api/comments/thiscomment')
+      .send({
+        inc_votes : 1
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid input type - Text")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update a valid ID with an invalid patch key", () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        vote : 1
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid request format; please submit 'inc_votes'.")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update a valid ID with an invalid patch value (ie. string", () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : "One"
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid input type - Text")
+      })
+    })
+  });
+
+  //DELETE Comments
+  describe('/api/comments/:comment_id', () => {
     it('DELETE  204: Deletes a row in the comments table and responds with a 204 status, with no content', () => {
       return request(app)
       .delete('/api/comments/2')
