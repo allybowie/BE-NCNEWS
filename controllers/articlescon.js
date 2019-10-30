@@ -1,7 +1,8 @@
 const {selectArticles , selectArticleByID , updateArticle} = require('../models/articlesmod');
 
 exports.getArticles = (req, res, next) => {
-    return selectArticles().then((articles) => {
+    const query = req.query
+    return selectArticles(query).then((articles) => {
         res.status(200).send({ articles })
     }).catch(next)
 }

@@ -108,6 +108,97 @@ describe("/api", () => {
           expect(testArticle.comment_count).to.equal('13')
         });
     });
+    it("GET: 200 - returns an array of all articles with correct comment counts ordered by dates, descending as default", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          const firstArticle = articles[0]
+          const lastArticle = articles[11]
+          expect(firstArticle.article_id).to.equal(1)
+          expect(lastArticle.article_id).to.equal(12)
+        });
+    });
+    it("GET: 200 - returns an array of all articles with correct comment counts, that also match an ordered query (dates, ascending)", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&&order=asc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          const firstArticle = articles[0]
+          const lastArticle = articles[11]
+          expect(firstArticle.article_id).to.equal(12)
+          expect(lastArticle.article_id).to.equal(1)
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on a author query", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(3)
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on an author query", () => {
+      return request(app)
+        .get("/api/articles?author=butter_bridge")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          articles.forEach(article => {
+            expect(article.author).to.equal("butter_bridge")
+          })
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on a topic query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(11)
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on an topic query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          articles.forEach(article => {
+            expect(article.topic).to.equal("mitch")
+          })
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on a topic & author query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&&author=rogersop")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(2)
+        });
+    });
+    it("GET: 200 - returns an array of correct length with correct comment counts depending on an topic & author query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&&author=rogersop")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          articles.forEach(article => {
+            expect(article.topic).to.equal("mitch")
+            expect(article.author).to.equal("rogersop")
+          })
+        });
+    });
+    it("GET: 200 - returns an array of correct length and order with correct comment counts depending on an topic  & author query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&&author=rogersop&&sort_by=article_id&&order=asc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          const firstArticle = articles[0]
+          const lastArticle = articles[1]
+          articles.forEach(article => {
+            expect(article.topic).to.equal("mitch")
+            expect(article.author).to.equal("rogersop")
+          })
+          expect(firstArticle.article_id<lastArticle.article_id).to.equal(true)
+        });
+    });
   });
 
   //GET Article by ID
