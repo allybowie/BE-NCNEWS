@@ -19,7 +19,8 @@ exports.selectArticleByID = article_id => {
     .select('articles.*')
     .where('articles.article_id','=',id)
     .then(article => {
-      if(! article){
+      if(!article.length){
+        
         return Promise.reject({
           status : 404,
           msg : `Article with ID '${article_id}' does not exist!`

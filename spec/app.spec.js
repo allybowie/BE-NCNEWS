@@ -90,6 +90,8 @@ describe("/api", () => {
     });
   });
 
+
+// GET Comments by article ID
   describe('/api/articles/:article_id/comments', () => {
     it('GET 200 - returns an array of comments when valid article id is input', () => {
       return request(app)
@@ -159,9 +161,35 @@ describe("/api", () => {
         })
     });
   });
+
+  //DELETE Comments
+  describe('/api/comments/:comment_id', () => {
+    it('DELETE  204: Deletes a row in the comments table and responds with a 204 status, with no content', () => {
+      return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(undefined)
+      })
+    });
+    it('GET 200: Returns an array of comments for the article which originally included the deleted comment, without that comment', () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({body : {comments}}) => {
+        expect(!comments.includes({
+          comment_id: 2,
+          votes: 14,
+          created_at: '2016-11-22T12:36:03.389Z',
+          author: 'butter_bridge',
+          body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.'
+        }))
+      })
+      })
+    })
   
 
-  //GET Users
+  //GET Users by username
   describe("/api/users/:username", () => {
     it("GET: 200 - returns an individual username", () => {
       return request(app)
