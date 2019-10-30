@@ -33,21 +33,31 @@ exports.selectArticleByID = article_id => {
 
 exports.updateArticle = (inputID, votesUpdate) => {
   const id = inputID
-  console.log("ID",id)
-  console.log("votes",votesUpdate)
 
-
+  if(!votesUpdate) {
+    return Promise.reject({
+        status : 400,
+        msg : `Invalid request format; please submit 'inc_votes'.`
+    })
+}
 
   return connection('articles')
-    .update({vote : vote+votesUpdate})
+    .increment('votes', votesUpdate)
     .where('articles.article_id', '=', id)
+    .then(() => {
+    return connection('articles')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count({comment_count : 'comments.comment_id'})
     .groupBy('articles.article_id')
+    .first('articles.*')
+    .where('articles.article_id','=',id)
     .then(article => {
-      console.log(article)
+      if(!article){
+      return Promise.reject({
+        status : 404,
+        msg : `Article with ID '${inputID}' does not exist!`
     })
-    
-
-  
+  } else return article
+    })
+    })
 }

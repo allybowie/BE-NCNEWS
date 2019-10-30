@@ -52,7 +52,7 @@ exports.updateVotes = (inputID, votesUpdate) => {
         if(comment.length){
         return connection('comments')
         .where('comment_id', '=', inputID)
-        .update({votes : comment[0].votes + votesUpdate})
+        .increment('votes', votesUpdate)
         .returning("*")
         } else {
             return Promise.reject({

@@ -15,11 +15,9 @@ exports.getArticleByID = (req, res, next) => {
 }
 
 exports.patchArticle = (req, res, next) => {
-    console.log("IN PATCH ARTICLE CONTROLLER")
     const {article_id} = req.params;
     const {inc_votes} = req.body;
-    return updateArticle(article_id , inc_votes).then(updatedArticle => {
-        const article = updatedArticle[0]
+    return updateArticle(article_id , inc_votes).then(article => {
         res.status(200).send({article})
-    })
+    }).catch(next)
 }

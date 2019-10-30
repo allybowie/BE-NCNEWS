@@ -91,7 +91,7 @@ describe("/api", () => {
   });
 
   //PATCH Article by ID
-  describe('/api/articles/:articleID', () => {
+  describe.only('/api/articles/:articleID', () => {
     it('PATCH 200 - updates the vote count on an article and responds with the full, updated article', () => {
       return request(app)
       .patch('/api/articles/1')
@@ -103,7 +103,7 @@ describe("/api", () => {
         expect(article).to.be.an("object")
       })
     });
-    it('PATCH 200 - returns an updated article object with the correct keys', () => {
+    it('PATCH 200 - returns an updated article object with the correct keys by increasing votes', () => {
       return request(app)
       .patch('/api/articles/1')
       .send({
@@ -111,9 +111,66 @@ describe("/api", () => {
       })
       .expect(200)
       .then(({ body : { article } }) => {
-        expect(article).to.have.keys("article_id", "author", "title", "body", "created_at", "topic", "comment_count", )
+        expect(article).to.have.keys("article_id", "author", "title", "body", "created_at", "topic", "comment_count", "votes")
+        expect(article.votes).to.equal(101)
       })
     });
+    it('PATCH 200 - returns an updated article object with the correct keys by descreasing votes', () => {
+      return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes : -1
+      })
+      .expect(200)
+      .then(({ body : { article } }) => {
+        expect(article).to.have.keys("article_id", "author", "title", "body", "created_at", "topic", "comment_count", "votes")
+        expect(article.votes).to.equal(99)
+      })
+    });
+    it("PATCH 404 - returns a 404 error when attempting to update an article that doesn't exist", () => {
+      return request(app)
+      .patch('/api/articles/20')
+      .send({
+        inc_votes : 1
+      })
+      .expect(404)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Article with ID '20' does not exist!")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update an invalid data-type (ie. Article ID is text", () => {
+      return request(app)
+      .patch('/api/articles/thisarticle')
+      .send({
+        inc_votes : 1
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid input type - Text")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update a valid ID with an invalid patch key", () => {
+      return request(app)
+      .patch('/api/articles/1')
+      .send({
+        vote : 1
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid request format; please submit 'inc_votes'.")
+      })
+    })
+    it("PATCH 400 - returns a 400 error when attempting to update a valid ID with an invalid patch value (ie. string", () => {
+      return request(app)
+      .patch('/api/articles/2')
+      .send({
+        inc_votes : "One"
+      })
+      .expect(400)
+      .then(({ body : {msg}}) => {
+        expect(msg).to.equal("Invalid input type - Text")
+      })
+    })
   });
 
 
@@ -213,7 +270,7 @@ describe("/api", () => {
         expect(comment).to.have.keys("comment_id", "author", "article_id", "votes", "created_at", "body")
       })
     });
-    it('PATCH 200 - returns an updated object with the correct keys and the correctly updated key', () => {
+    it('PATCH 200 - returns an updated object with the correct keys and the correctly updated key (increasing)', () => {
       return request(app)
       .patch('/api/comments/2')
       .send({
@@ -222,6 +279,17 @@ describe("/api", () => {
       .expect(200)
       .then(({ body : { comment } }) => {
         expect(comment.votes).to.have.equal(15)
+      })
+    });
+    it('PATCH 200 - returns an updated object with the correct keys and the correctly updated key (decreasing)', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send({
+        inc_votes : -3
+      })
+      .expect(200)
+      .then(({ body : { comment } }) => {
+        expect(comment.votes).to.have.equal(11)
       })
     });
     it('PATCH 200 - returns an updated object with unaltered keys returned unedited', () => {
