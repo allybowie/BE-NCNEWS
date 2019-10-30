@@ -30,3 +30,24 @@ exports.selectArticleByID = article_id => {
       }
     })
   }
+
+exports.updateArticle = (inputID, votesUpdate) => {
+  const id = inputID
+  console.log("ID",id)
+  console.log("votes",votesUpdate)
+
+
+
+  return connection('articles')
+    .update({vote : vote+votesUpdate})
+    .where('articles.article_id', '=', id)
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .count({comment_count : 'comments.comment_id'})
+    .groupBy('articles.article_id')
+    .then(article => {
+      console.log(article)
+    })
+    
+
+  
+}

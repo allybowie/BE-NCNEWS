@@ -90,6 +90,32 @@ describe("/api", () => {
     });
   });
 
+  //PATCH Article by ID
+  describe('/api/articles/:articleID', () => {
+    it('PATCH 200 - updates the vote count on an article and responds with the full, updated article', () => {
+      return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { article } }) => {
+        expect(article).to.be.an("object")
+      })
+    });
+    it('PATCH 200 - returns an updated article object with the correct keys', () => {
+      return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes : 1
+      })
+      .expect(200)
+      .then(({ body : { article } }) => {
+        expect(article).to.have.keys("article_id", "author", "title", "body", "created_at", "topic", "comment_count", )
+      })
+    });
+  });
+
 
 // GET Comments by article ID
   describe('/api/articles/:article_id/comments', () => {
@@ -163,9 +189,9 @@ describe("/api", () => {
   });
 
 
-  //PATCH Comments
-  describe.only('/api/comments/:comment_id', () => {
-    it('PATCH 200 - uppdates the comment count and responds with the full, updated comment', () => {
+  //PATCH Comments by ID
+  describe('/api/comments/:comment_id', () => {
+    it('PATCH 200 - updates the vote count and responds with the full, updated comment', () => {
       return request(app)
       .patch('/api/comments/2')
       .send({
@@ -176,7 +202,7 @@ describe("/api", () => {
         expect(comment).to.be.an("object")
       })
     });
-    it('PATCH 200 - returns an updated object with the correct keys', () => {
+    it('PATCH 200 - returns an updated comment object with the correct keys', () => {
       return request(app)
       .patch('/api/comments/2')
       .send({

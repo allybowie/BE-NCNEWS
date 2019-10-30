@@ -1,4 +1,4 @@
-const {selectArticles , selectArticleByID} = require('../models/articlesmod');
+const {selectArticles , selectArticleByID , updateArticle} = require('../models/articlesmod');
 
 exports.getArticles = (req, res, next) => {
     return selectArticles().then((articles) => {
@@ -12,4 +12,14 @@ exports.getArticleByID = (req, res, next) => {
     return selectArticleByID(article_id).then(article => {
         res.status(200).send({article})
     }).catch(next)
+}
+
+exports.patchArticle = (req, res, next) => {
+    console.log("IN PATCH ARTICLE CONTROLLER")
+    const {article_id} = req.params;
+    const {inc_votes} = req.body;
+    return updateArticle(article_id , inc_votes).then(updatedArticle => {
+        const article = updatedArticle[0]
+        res.status(200).send({article})
+    })
 }
