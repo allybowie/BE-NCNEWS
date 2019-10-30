@@ -41,12 +41,7 @@ exports.removeComment = inputID => {
 exports.updateVotes = (inputID, votesUpdate) => {
     let locatedComment = connection.select("*").from('comments').where('comment_id', '=', inputID).returning("*")
 
-    if(!votesUpdate) {
-        return Promise.reject({
-            status : 400,
-            msg : `Invalid request format; please submit 'inc_votes'.`
-        })
-    }
+    if(!votesUpdate) votesUpdate = 0
 
     return locatedComment.then(comment => {
         if(comment.length){

@@ -34,12 +34,13 @@ exports.selectArticleByID = article_id => {
 exports.updateArticle = (inputID, votesUpdate) => {
   const id = inputID
 
-  if(!votesUpdate) {
-    return Promise.reject({
-        status : 400,
-        msg : `Invalid request format; please submit 'inc_votes'.`
-    })
-}
+  if(!votesUpdate) votesUpdate = 0
+//   {
+//     return Promise.reject({
+//         status : 400,
+//         msg : `Invalid request format; please submit 'inc_votes'.`
+//     })
+// }
 
   return connection('articles')
     .increment('votes', votesUpdate)
