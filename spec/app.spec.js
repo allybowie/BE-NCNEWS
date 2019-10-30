@@ -163,7 +163,7 @@ describe("/api", () => {
   });
 
   //DELETE Comments
-  describe('/api/comments/:comment_id', () => {
+  describe.only('/api/comments/:comment_id', () => {
     it('DELETE  204: Deletes a row in the comments table and responds with a 204 status, with no content', () => {
       return request(app)
       .delete('/api/comments/2')
@@ -186,6 +186,24 @@ describe("/api", () => {
         }))
       })
       })
+      
+    it("DELETE 404: Responds with a 404 status with a message if a delete request is sent for a comment that doesn't exist", () => {
+      return request(app)
+      .delete('/api/comments/60')
+      .expect(404)
+      .then(({ body : { msg } }) => {
+        expect(msg).to.equal("Comment with ID '60' does not exist!")
+      })
+    })
+
+    it("DELETE 400: Responds with a 400 status with a message if a delete request is sent for an invalid data type (ie. text)", () => {
+      return request(app)
+      .delete('/api/comments/commentstring')
+      .expect(400)
+      .then(({ body : { msg } }) => {
+        expect(msg).to.equal('Invalid input type - Text')
+      })
+    })
     })
   
 

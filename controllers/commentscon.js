@@ -10,7 +10,9 @@ exports.getComments = (req,res,next) => {
 
 exports.deleteComment = (req, res, next) => {
     const {comment_id} = req.params
-    return removeComment(comment_id).then(response => {
+    return removeComment(comment_id).then((response) => {
+        console.log(response)
+        console.log("Successfully deleted")
         res.sendStatus(204)
-    })
+    }).catch(next)
 }

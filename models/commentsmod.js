@@ -19,8 +19,20 @@ exports.selectComments = (article_id , sort_by = 'created_at' , order = 'desc') 
 }
 
 
-exports.removeComment = comment_id => {
-    return connection('comments')
-            .where('comment_id', '=' , comment_id)
-            .del()
+exports.removeComment = inputID => {
+    let locatedComment = connection.select("comment_id").from('comments').where('comment_id', '=', inputID).returning("*")
+
+    return locatedComment.then(comment => {
+        if(comment.length) {
+            return connection('comments')
+                        .where('comment_id', '=', inputID)
+                        .del()
+           
+        } else { 
+            return Promise.reject({
+                status : 404,
+                msg : `Comment with ID '${inputID}' does not exist!`
+            })
+        }
+            })
 }
