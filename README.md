@@ -122,20 +122,20 @@ Utilising your data manipulation skills, you will also need to complete the util
 Your server _must_ have the following endpoints:
 
 ```http
-GET /api/topics     //done
+GET /api/topics     //DONE
 
-GET /api/users/:username    //done
+GET /api/users/:username    //DONE
 
-GET /api/articles/:article_id
-PATCH /api/articles/:article_id
+GET /api/articles/:article_id   //DONE
+PATCH /api/articles/:article_id    //DONE
 
-POST /api/articles/:article_id/comments
-GET /api/articles/:article_id/comments
+POST /api/articles/:article_id/comments   //DONE
+GET /api/articles/:article_id/comments    //DONE
 
-GET /api/articles    //done
+GET /api/articles    //DONE
 
-PATCH /api/comments/:comment_id
-DELETE /api/comments/:comment_id
+PATCH /api/comments/:comment_id    //DONE
+DELETE /api/comments/:comment_id   //DONE
 
 GET /api ..
 ```
