@@ -65,6 +65,18 @@ describe("/api", () => {
     });
   });
 
+  //GET Hello There
+  describe('/hellothere', () => {
+    it('GET: 200 -  returns "Hello there"', () => {
+      return request(app)
+      .get('/api/hellothere')
+      .expect(200)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("General Kenobi!!!")
+      })
+    });
+  });
+
   //GET Articles
   describe("/articles", () => {
     it("GET: 200 - returns an array of all articles", () => {
@@ -598,7 +610,7 @@ describe("/api", () => {
         .get('/api/articles/29/comments')
         .expect(404)
         .then(({body: { msg }}) => {
-          expect(msg).to.equal("If Article 29 does not appear in our archives, it does not exist. Impossible... perhaps the achives are incomplete!")
+          expect(msg).to.equal("If Article 29 does not appear in our archives, it does not exist. Impossible... perhaps the archives are incomplete!")
         })
     });
     it('GET: 400 - returns an error when given an invalid article ID', () => {
@@ -1071,6 +1083,39 @@ describe("/api", () => {
     it('DELETE: 405 - returns a 405 error when the api endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api')
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+  });
+
+  //ERRORS = INVALID METHODS HELLO THERE
+  describe('/invalidmethod-hellothere', () => {
+    it('POST: 405 - returns a 405 error when the /hellothere endpoint is given a POST request', () => {
+      return request(app)
+      .post('/api/hellothere')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge'
+    })
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+    it('PATCH: 405 - returns a 405 error when the /hellothere endpoint is given a PATCH request', () => {
+      return request(app)
+      .patch('/api/hellothere')
+      .send({inc_votes: 1})
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+    it('DELETE: 405 - returns a 405 error when the /hellothere endpoint is given a DELETE request', () => {
+      return request(app)
+      .delete('/api/hellothere')
       .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
