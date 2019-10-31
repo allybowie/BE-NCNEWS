@@ -13,6 +13,20 @@ describe("/api", () => {
   });
   after(() => connection.destroy());
 
+
+  // //GET Api
+  // describe.only('/api', () => {
+  //   it('GET: 200 - returns a JSON', () => {
+  //     return request(app)
+  //     .get('/api')
+  //     .expect(200)
+  //     .then(({body: {msg}}) => {
+  //       expect(msg).to.be.an("object")
+  //     })
+  //   });
+  // });
+
+
   //GET Topics
   describe("/topics", () => {
     it("GET: 200 - returns an array", () => {
