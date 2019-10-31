@@ -199,6 +199,54 @@ describe("/api", () => {
           expect(firstArticle.article_id<lastArticle.article_id).to.equal(true)
         });
     });
+    it("GET: 400 - returns a 400 error if the queried author is not found", () => {
+      return request(app)
+        .get("/api/articles?author=wrong")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("The author you have requested does not exist")
+        });
+    });
+    it("GET: 404 - returns a 404 error if no articles by the queried author are found", () => {
+      return request(app)
+        .get("/api/articles?author=lurker")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("We currently have no articles by lurker")
+        });
+    });
+    it("GET: 400 - returns a 400 error if the queried topic is not found", () => {
+      return request(app)
+        .get("/api/articles?topic=wrong")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("This category does not exist")
+        });
+    });
+    it("GET: 400 - returns a 404 error if the queried topic is not found", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("There are no articles in the category 'paper'")
+        });
+    });
+    it("GET: 400 - returns a 400 error when an invalid sort_by category is given", () => {
+      return request(app)
+        .get("/api/articles?sort_by=date")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("We cannot sort the articles in the way you have requested. Please try again")
+        });
+    });
+    it("GET: 400 - returns a 400 error when an invalid sort order is given", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&&order=upwards")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.equal("We cannot sort the articles in the way you have requested. Please try again")
+        });
+    });
   });
 
   //GET Article by ID
