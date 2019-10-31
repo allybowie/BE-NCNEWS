@@ -455,7 +455,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge', 
     })
-      .expect(400)
+      .expect(404)
       .then(({body : {msg}}) => {
         expect(msg).to.equal("This article does not exist")
       })
@@ -483,7 +483,7 @@ describe("/api", () => {
         expect(msg).to.equal("Not enough information. Please input 'body' & 'username'")
       })
     });
-    it.only('POST 400: gives a 400 error when the given username does not exist', () => {
+    it('POST 400: gives a 400 error when the given username does not exist', () => {
       return request(app)
       .post('/api/articles/1/comments')
       .send({body:

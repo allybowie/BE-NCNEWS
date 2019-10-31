@@ -68,22 +68,30 @@ exports.addComment = (article_id, comment) => {
             status: 400, msg: "Not enough information. Please input 'body' & 'username'"
         })
     }
-    const requiredFields = {body: comment.body, created_by: comment.created_by}
-    const articlePromise = connection.select('*').from('articles').where('article_id', '=', article_id).returning("*")
-    const newComment = formatDates([requiredFields])
-    return articlePromise.then(article => {
-        if(article.length===0){
+    return connection.select('*').from('users').where('username', '=', comment.created_by)
+    .then(user => {
+        if(!user.length){
             return Promise.reject({
-                status: 400, msg: "This article does not exist"
+                status:400, msg: "This user does not have an account"
             })
         }
-        commentObj = newComment[0]
-        commentObj.belongs_to = article[0].title
-        const articleRef = makeRefObj(article)
-        const finalComment = formatComments([commentObj], articleRef)
-        delete finalComment[0].created_at
-        console.log(finalComment)
-        return connection('comments').insert(finalComment[0]).returning("*")
+        const requiredFields = {body: comment.body, created_by: comment.created_by}
+        const articlePromise = connection.select('*').from('articles').where('article_id', '=', article_id).returning("*")
+        const newComment = formatDates([requiredFields])
+        return articlePromise.then(article => {
+            if(article.length===0){
+                return Promise.reject({
+                    status: 404, msg: "This article does not exist"
+                })
+            }
+            commentObj = newComment[0]
+            commentObj.belongs_to = article[0].title
+            const articleRef = makeRefObj(article)
+            const finalComment = formatComments([commentObj], articleRef)
+            delete finalComment[0].created_at
+            // console.log(finalComment)
+            return connection('comments').insert(finalComment[0]).returning("*")
+        })
     })
 
 }
