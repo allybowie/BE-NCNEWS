@@ -389,7 +389,7 @@ describe("/api", () => {
 
   //POST Article
   describe.only('/api/articles/:article_id/comments', () => {
-    it('201: posts a new comment', () => {
+    it('POST 201: posts a new comment', () => {
       return request(app)
       .post('/api/articles/1/comments')
       .send({body:
@@ -401,7 +401,7 @@ describe("/api", () => {
         expect(comment).to.be.an("object")
       })
     });
-    it('201: returns a comment with the correct keys', () => {
+    it('POST 201: returns a comment with the correct keys', () => {
       return request(app)
       .post('/api/articles/1/comments')
       .send({body:
@@ -413,7 +413,7 @@ describe("/api", () => {
         expect(comment).to.have.keys(['article_id', 'body', 'created_at', 'comment_id', 'author', 'votes'])
       })
     });
-    it('201: returns a specifically filled out comment body', () => {
+    it('POST 201: returns a specifically filled out comment body', () => {
       return request(app)
       .post('/api/articles/1/comments')
       .send({body:
@@ -428,6 +428,71 @@ describe("/api", () => {
         expect(comment.body).to.equal('WHAT A WONDERFUL COMMENT THIS IS')
         expect(comment.author).to.equal('butter_bridge')
         expect(comment.votes).to.equal(0)
+      })
+    });
+    it('POST 201: ignores invalid/unneccesary fields', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge',
+      favourite_wrestler: "Orange Cassidy" 
+    })
+      .expect(201)
+      .then(({body : {comment}}) => {
+        expect(comment).to.have.keys(['article_id', 'body', 'created_at', 'comment_id', 'author', 'votes'])
+        expect(comment.comment_id).to.eql(19)
+        expect(comment.article_id).to.equal(1)
+        expect(comment.body).to.equal('WHAT A WONDERFUL COMMENT THIS IS')
+        expect(comment.author).to.equal('butter_bridge')
+        expect(comment.votes).to.equal(0)
+      })
+    });
+    it('POST 400: gives a 400 error when an article that does not exist', () => {
+      return request(app)
+      .post('/api/articles/20/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge', 
+    })
+      .expect(400)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("This article does not exist")
+      })
+    });
+    it('POST 400: gives a 400 error when an invalid article id', () => {
+      return request(app)
+      .post('/api/articles/invalid/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge', 
+    })
+      .expect(400)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("Invalid input type - Text")
+      })
+    });
+    it('POST 400: gives a 400 error when not given enough information', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+    })
+      .expect(400)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("Not enough information. Please input 'body' & 'username'")
+      })
+    });
+    it.only('POST 400: gives a 400 error when the given username does not exist', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+        created_by: 'chrisjericho'
+    })
+      .expect(400)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("This user does not have an account")
       })
     });
   });

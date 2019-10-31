@@ -12,6 +12,7 @@ app.use("/api", apiRouter);
 
 app.use((err, req, res, next) => {
   if(err.code){
+    // console.log(err.code)
    res.status(errRef[err.code].code).send({msg: errRef[err.code].message})
   } else (next(err))
 })
