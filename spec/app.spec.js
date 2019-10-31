@@ -24,6 +24,14 @@ describe("/api", () => {
         expect(endpoints).to.be.an("object")
       })
     });
+    it('GET: 200 - returns the required information', () => {
+      return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({body: {endpoints}}) => {
+        expect(endpoints).to.be.an("object")
+      })
+    });
   });
 
 
@@ -58,7 +66,7 @@ describe("/api", () => {
   });
 
   //GET Articles
-  describe("/articles", () => {
+  describe.only("/articles", () => {
     it("GET: 200 - returns an array of all articles", () => {
       return request(app)
         .get("/api/articles")
@@ -216,7 +224,7 @@ describe("/api", () => {
     it("GET: 400 - returns a 400 error if the queried author is not found", () => {
       return request(app)
         .get("/api/articles?author=wrong")
-        .expect(400)
+        .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).to.equal("The author you have requested does not exist")
         });
@@ -224,15 +232,15 @@ describe("/api", () => {
     it("GET: 404 - returns a 404 error if no articles by the queried author are found", () => {
       return request(app)
         .get("/api/articles?author=lurker")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).to.equal("We currently have no articles by lurker")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).to.eql([])
         });
     });
     it("GET: 400 - returns a 400 error if the queried topic is not found", () => {
       return request(app)
         .get("/api/articles?topic=wrong")
-        .expect(400)
+        .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).to.equal("This category does not exist")
         });
@@ -240,9 +248,9 @@ describe("/api", () => {
     it("GET: 400 - returns a 404 error if the queried topic is not found", () => {
       return request(app)
         .get("/api/articles?topic=paper")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).to.equal("There are no articles in the category 'paper'")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).to.eql([])
         });
     });
     it("GET: 400 - returns a 400 error when an invalid sort_by category is given", () => {
@@ -408,7 +416,7 @@ describe("/api", () => {
       .post('/api/articles/1/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge'
+      username: 'butter_bridge'
     })
       .expect(201)
       .then(({body : {comment}}) => {
@@ -420,7 +428,7 @@ describe("/api", () => {
       .post('/api/articles/1/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge'
+      username: 'butter_bridge'
     })
       .expect(201)
       .then(({body : {comment}}) => {
@@ -432,7 +440,7 @@ describe("/api", () => {
       .post('/api/articles/1/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge'
+      username: 'butter_bridge'
     })
       .expect(201)
       .then(({body : {comment}}) => {
@@ -449,7 +457,7 @@ describe("/api", () => {
       .post('/api/articles/1/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge',
+      username: 'butter_bridge',
       favourite_wrestler: "Orange Cassidy" 
     })
       .expect(201)
@@ -467,11 +475,23 @@ describe("/api", () => {
       .post('/api/articles/20/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge', 
+      username: 'butter_bridge', 
     })
       .expect(404)
       .then(({body : {msg}}) => {
         expect(msg).to.equal("This article does not exist")
+      })
+    });
+    it('POST 400: gives a 400 error when an article that does not exist with an incorrect username', () => {
+      return request(app)
+      .post('/api/articles/20/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      username: 'wrong', 
+    })
+      .expect(404)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal("This user does not have an account")
       })
     });
     it('POST 400: gives a 400 error when an invalid article id', () => {
@@ -479,7 +499,7 @@ describe("/api", () => {
       .post('/api/articles/invalid/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-      created_by: 'butter_bridge', 
+      username: 'butter_bridge', 
     })
       .expect(400)
       .then(({body : {msg}}) => {
@@ -502,9 +522,9 @@ describe("/api", () => {
       .post('/api/articles/1/comments')
       .send({body:
         "WHAT A WONDERFUL COMMENT THIS IS",
-        created_by: 'chrisjericho'
+        username: 'chrisjericho'
     })
-      .expect(400)
+      .expect(404)
       .then(({body : {msg}}) => {
         expect(msg).to.equal("This user does not have an account")
       })

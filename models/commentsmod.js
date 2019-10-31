@@ -63,19 +63,19 @@ exports.updateVotes = (inputID, votesUpdate) => {
 
 
 exports.addComment = (article_id, comment) => {
-    if(!comment.created_by || !comment.body){
+    if(!comment.username || !comment.body){
         return Promise.reject({
             status: 400, msg: "Not enough information. Please input 'body' & 'username'"
         })
     }
-    return connection.select('*').from('users').where('username', '=', comment.created_by)
+    return connection.select('*').from('users').where('username', '=', comment.username)
     .then(user => {
         if(!user.length){
             return Promise.reject({
-                status:400, msg: "This user does not have an account"
+                status:404, msg: "This user does not have an account"
             })
         }
-        const requiredFields = {body: comment.body, created_by: comment.created_by}
+        const requiredFields = {body: comment.body, created_by: comment.username}
         const articlePromise = connection.select('*').from('articles').where('article_id', '=', article_id).returning("*")
         const newComment = formatDates([requiredFields])
         return articlePromise.then(article => {
@@ -89,7 +89,6 @@ exports.addComment = (article_id, comment) => {
             const articleRef = makeRefObj(article)
             const finalComment = formatComments([commentObj], articleRef)
             delete finalComment[0].created_at
-            // console.log(finalComment)
             return connection('comments').insert(finalComment[0]).returning("*")
         })
     })

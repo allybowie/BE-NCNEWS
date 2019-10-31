@@ -32,12 +32,10 @@ exports.selectArticles = (query) => {
         .then(author => {
           if(author.length === 0){
             return Promise.reject({
-              status: 400, msg: `The author you have requested does not exist`
+              status: 404, msg: `The author you have requested does not exist`
             })
           } else if (author.length > 0){
-            return Promise.reject({
-              status: 404, msg: `We currently have no articles by ${author[0].username}`
-            })
+            return articles
           }
 
         })
@@ -47,12 +45,10 @@ exports.selectArticles = (query) => {
         .then(topic => {
           if(topic.length===0){
             return Promise.reject({
-              status:400 , msg: 'This category does not exist'
+              status:404 , msg: 'This category does not exist'
             })
           } else if (topic.length>0){
-            return Promise.reject({
-              status:404, msg: `There are no articles in the category '${topic[0].slug}'`
-            })
+            return articles
           }
         })
       }
