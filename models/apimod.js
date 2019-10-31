@@ -1,8 +1,8 @@
 const fs = require('fs');
 
-exports.fetchEndpoints = () => {
+exports.fetchEndpoints = cb => {
     return fs.readFile('./endpoints.json', (err, object) => {
         const parsed = JSON.parse(object)
-        return parsed
+        cb(null, parsed)
       })
 }

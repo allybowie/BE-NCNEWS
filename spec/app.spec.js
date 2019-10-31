@@ -14,17 +14,17 @@ describe("/api", () => {
   after(() => connection.destroy());
 
 
-  // //GET Api
-  // describe.only('/api', () => {
-  //   it('GET: 200 - returns a JSON', () => {
-  //     return request(app)
-  //     .get('/api')
-  //     .expect(200)
-  //     .then(({body: {msg}}) => {
-  //       expect(msg).to.be.an("object")
-  //     })
-  //   });
-  // });
+  //GET Api
+  describe('/api', () => {
+    it('GET: 200 - returns a JSON', () => {
+      return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({body: {endpoints}}) => {
+        expect(endpoints).to.be.an("object")
+      })
+    });
+  });
 
 
   //GET Topics
@@ -826,7 +826,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS TOPICS ENDPOINT
   describe('/invalidmethod-topics', () => {
-    it('PATCH: 400 - returns a 400 error when the topics endpoint is given a PATCH request', () => {
+    it('PATCH: 405 - returns a 405 error when the topics endpoint is given a PATCH request', () => {
       return request(app)
       .patch('/api/topics')
       .send({inc_votes: 1})
@@ -835,7 +835,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('POST: 400 - returns a 400 error when the topics endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 405 error when the topics endpoint is given a POST request', () => {
       return request(app)
       .post('/api/topics')
       .send({body:
@@ -859,7 +859,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS USERS ENDPOINT
   describe('/invalidmethod-users', () => {
-    it('PATCH: 400 - returns a 400 error when the users endpoint is given a PATCH request', () => {
+    it('PATCH: 405 - returns a 405 error when the users endpoint is given a PATCH request', () => {
       return request(app)
       .patch('/api/users/lurker')
       .send({inc_votes: 1})
@@ -868,7 +868,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('POST: 400 - returns a 400 error when the topics endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 405 error when the topics endpoint is given a POST request', () => {
       return request(app)
       .post('/api/users/lurker')
       .send({body:
@@ -880,7 +880,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('DELETE: 400 - returns a 400 error when the topics endpoint is given a DELETE request', () => {
+    it('DELETE: 405 - returns a 405 error when the topics endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/users/lurker')
       .expect(405)
@@ -892,7 +892,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS ARTICLES
   describe('/invalidmethod-articles', () => {
-    it('PATCH: 400 - returns a 400 error when the articles endpoint is given a PATCH request', () => {
+    it('PATCH: 405 - returns a 405 error when the articles endpoint is given a PATCH request', () => {
       return request(app)
       .patch('/api/articles')
       .send({inc_votes: 1})
@@ -901,7 +901,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('POST: 400 - returns a 400 error when the articles endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 405 error when the articles endpoint is given a POST request', () => {
       return request(app)
       .post('/api/articles')
       .send({body:
@@ -913,7 +913,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('DELETE: 400 - returns a 400 error when the articles endpoint is given a DELETE request', () => {
+    it('DELETE: 405 - returns a 405 error when the articles endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles')
       .expect(405)
@@ -925,7 +925,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS ARTICLES/:ARTICLE_ID
   describe('/invalidmethod-articles', () => {
-    it('POST: 400 - returns a 400 error when the articles/:article_id endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 405 error when the articles/:article_id endpoint is given a POST request', () => {
       return request(app)
       .post('/api/articles/1')
       .send({body:
@@ -937,7 +937,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('DELETE: 400 - returns a 400 error when the articles/:article_id endpoint is given a DELETE request', () => {
+    it('DELETE: 405 - returns a 405 error when the articles/:article_id endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles/1')
       .expect(405)
@@ -949,7 +949,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS ARTICLES/:ARTICLE_ID/COMMENTS
   describe('/invalidmethod-articles', () => {
-    it('POST: 400 - returns a 400 error when the articles/:article_id endpoint is given a PATCH request', () => {
+    it('POST: 405 - returns a 405 error when the articles/:article_id endpoint is given a PATCH request', () => {
       return request(app)
       .patch('/api/articles/1/comments')
       .send({inc_votes: 1})
@@ -958,7 +958,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('DELETE: 400 - returns a 400 error when the articles/:article_id endpoint is given a DELETE request', () => {
+    it('DELETE: 405 - returns a 405 error when the articles/:article_id endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles/1/comments')
       .expect(405)
@@ -970,7 +970,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS COMMENTS
   describe('/invalidmethod-comments', () => {
-    it('PATCH: 400 - returns a 400 error when the comments endpoint is given a PATCH request', () => {
+    it('PATCH: 405 - returns a 405 error when the comments endpoint is given a PATCH request', () => {
       return request(app)
       .patch('/api/comments')
       .send({inc_votes: 1})
@@ -979,7 +979,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('POST: 400 - returns a 400 error when the comments endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 405 error when the comments endpoint is given a POST request', () => {
       return request(app)
       .post('/api/comments')
       .send({body:
@@ -991,7 +991,7 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('DELETE: 400 - returns a 400 error when the comments endpoint is given a DELETE request', () => {
+    it('DELETE: 405 - returns a 405 error when the comments endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/comments')
       .expect(405)
@@ -1003,7 +1003,7 @@ describe("/api", () => {
 
   //ERRORS - INVALID METHODS COMMENTS/:COMMENT_ID
    describe('/invalidmethod-comments/:comment_id', () => {
-    it('POST: 400 - returns a 400 error when the comments/:comment_id endpoint is given a POST request', () => {
+    it('POST: 405 - returns a 400 error when the comments/:comment_id endpoint is given a POST request', () => {
       return request(app)
       .post('/api/comments/1')
       .send({body:
@@ -1015,9 +1015,42 @@ describe("/api", () => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
     });
-    it('GET: 400 - returns a 400 error when the comments/:comment_id endpoint is given a GET request', () => {
+    it('GET: 405 - returns a 400 error when the comments/:comment_id endpoint is given a GET request', () => {
       return request(app)
       .get('/api/comments/1')
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+  });
+
+  //ERRORS - INVALID METHODS API
+  describe('/invalidmethod-api', () => {
+    it('POST: 405 - returns a 405 error when the /api endpoint is given a POST request', () => {
+      return request(app)
+      .post('/api')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge'
+    })
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+    it('PATCH: 405 - returns a 405 error when the /api endpoint is given a PATCH request', () => {
+      return request(app)
+      .patch('/api')
+      .send({inc_votes: 1})
+      .expect(405)
+      .then(({body : {msg}}) => {
+        expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
+      })
+    });
+    it('DELETE: 405 - returns a 405 error when the api endpoint is given a DELETE request', () => {
+      return request(app)
+      .delete('/api')
       .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)

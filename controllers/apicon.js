@@ -2,6 +2,7 @@ const fs = require('fs');
 const {fetchEndpoints} = require('../models/apimod')
 
 exports.getEndpoints = (req, res, next) => {
-    console.log("API ENDPOINT")
-    return fetchEndpoints()
+    fetchEndpoints((err, endpoints) => {
+        res.status(200).json({endpoints})
+    })
 }
