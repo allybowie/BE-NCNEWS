@@ -66,7 +66,7 @@ describe("/api", () => {
   });
 
   //GET Articles
-  describe.only("/articles", () => {
+  describe("/articles", () => {
     it("GET: 200 - returns an array of all articles", () => {
       return request(app)
         .get("/api/articles")
