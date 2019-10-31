@@ -1,4 +1,5 @@
 const connection = require('../db/connection')
+const { formatDates, formatComments, makeRefObj } = require('../db/utils/utils')
 
 exports.selectComments = (article_id , sort_by = 'created_at' , order = 'desc') => {
 
@@ -57,5 +58,20 @@ exports.updateVotes = (inputID, votesUpdate) => {
         }
     })
     
+
+}
+
+
+exports.addComment = (article_id, comment) => {
+    const articlePromise = connection.select('*').from('articles').where('article_id', '=', article_id).returning("*")
+    const newComment = formatDates([comment])
+    return articlePromise.then(article => {
+        commentObj = newComment[0]
+        commentObj.belongs_to = article[0].title
+        const articleRef = makeRefObj(article)
+        const finalComment = formatComments([commentObj], articleRef)
+        delete finalComment[0].created_at
+        return connection('comments').insert(finalComment[0]).returning("*")
+    })
 
 }

@@ -387,8 +387,53 @@ describe("/api", () => {
     })
   });
 
+  //POST Article
+  describe.only('/api/articles/:article_id/comments', () => {
+    it('201: posts a new comment', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge'
+    })
+      .expect(201)
+      .then(({body : {comment}}) => {
+        expect(comment).to.be.an("object")
+      })
+    });
+    it('201: returns a comment with the correct keys', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge'
+    })
+      .expect(201)
+      .then(({body : {comment}}) => {
+        expect(comment).to.have.keys(['article_id', 'body', 'created_at', 'comment_id', 'author', 'votes'])
+      })
+    });
+    it('201: returns a specifically filled out comment body', () => {
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send({body:
+        "WHAT A WONDERFUL COMMENT THIS IS",
+      created_by: 'butter_bridge'
+    })
+      .expect(201)
+      .then(({body : {comment}}) => {
+        expect(comment).to.have.keys(['article_id', 'body', 'created_at', 'comment_id', 'author', 'votes'])
+        expect(comment.comment_id).to.eql(19)
+        expect(comment.article_id).to.equal(1)
+        expect(comment.body).to.equal('WHAT A WONDERFUL COMMENT THIS IS')
+        expect(comment.author).to.equal('butter_bridge')
+        expect(comment.votes).to.equal(0)
+      })
+    });
+  });
 
-// GET Comments by article ID
+
+// GET Comments by article ID   (NEED TO HANDLE ERROR FOR WHEN AN ARTICLE HAS NO COMMENTS)
   describe('/api/articles/:article_id/comments', () => {
     it('GET: 200 - returns an array of comments when valid article id is input', () => {
       return request(app)

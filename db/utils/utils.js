@@ -2,7 +2,6 @@ exports.formatDates = list => {
     return list.map(object => {
         let newObj = {...object}
         let newTime = new Date(object.created_at)
-        // console.log(newTime)
         newObj.created_at = newTime
         return newObj
     })

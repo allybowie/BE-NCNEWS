@@ -20,7 +20,6 @@ exports.seed = function(knex) {
     })
     .then(userStuff => {
       const formattedDates =  formatDates(articleData)
-      // console.log(formattedDates)
       return knex('articles')
         .insert(formattedDates)
         .returning("*")
