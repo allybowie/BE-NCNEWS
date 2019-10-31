@@ -512,6 +512,14 @@ describe("/api", () => {
           expect(comments.length).to.equal(13)
         })
     });
+    it('GET: 200 - returns a 200 status when given an existing article has no comments', () => {
+      return request(app)
+        .get('/api/articles/7/comments')
+        .expect(200)
+        .then(({body: { comments }}) => {
+          expect(comments).to.eql([])
+        })
+    });
     it('GET: 200 - returns an array of comments sorted by "created_at", in ascending order', () => {
       return request(app)
         .get('/api/articles/1/comments?sort_by=created_at&&order=asc')
@@ -565,14 +573,6 @@ describe("/api", () => {
         .expect(400)
         .then(({body: { msg }}) => {
           expect(msg).to.equal('Invalid input type - Text')
-        })
-    });
-    it('GET: 404 - returns an error when an existing article has no comments', () => {
-      return request(app)
-        .get('/api/articles/7/comments')
-        .expect(404)
-        .then(({body: { msg }}) => {
-          expect(msg).to.equal('Oh no, this article has no comments!')
         })
     });
   });
@@ -816,7 +816,7 @@ describe("/api", () => {
       return request(app)
       .patch('/api/topics')
       .send({inc_votes: 1})
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -828,7 +828,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -836,7 +836,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the topics endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/topics')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -849,7 +849,7 @@ describe("/api", () => {
       return request(app)
       .patch('/api/users/lurker')
       .send({inc_votes: 1})
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -861,7 +861,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -869,7 +869,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the topics endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/users/lurker')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -882,7 +882,7 @@ describe("/api", () => {
       return request(app)
       .patch('/api/articles')
       .send({inc_votes: 1})
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -894,7 +894,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -902,7 +902,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the articles endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -918,7 +918,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -926,7 +926,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the articles/:article_id endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles/1')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -939,7 +939,7 @@ describe("/api", () => {
       return request(app)
       .patch('/api/articles/1/comments')
       .send({inc_votes: 1})
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -947,7 +947,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the articles/:article_id endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/articles/1/comments')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -960,7 +960,7 @@ describe("/api", () => {
       return request(app)
       .patch('/api/comments')
       .send({inc_votes: 1})
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -972,7 +972,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -980,7 +980,7 @@ describe("/api", () => {
     it('DELETE: 400 - returns a 400 error when the comments endpoint is given a DELETE request', () => {
       return request(app)
       .delete('/api/comments')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -996,7 +996,7 @@ describe("/api", () => {
         "WHAT A WONDERFUL COMMENT THIS IS",
       created_by: 'butter_bridge'
     })
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })
@@ -1004,7 +1004,7 @@ describe("/api", () => {
     it('GET: 400 - returns a 400 error when the comments/:comment_id endpoint is given a GET request', () => {
       return request(app)
       .get('/api/comments/1')
-      .expect(400)
+      .expect(405)
       .then(({body : {msg}}) => {
         expect(msg).to.equal(`Oak's words echoed, "There's a time and a place for everything, but not now"`)
       })

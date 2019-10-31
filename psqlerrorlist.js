@@ -7,5 +7,5 @@ exports.errRef = {
   }
 
   exports.invalidMeth = (req, res, next) => {
-    res.status(400).send({msg: `Oak's words echoed, "There's a time and a place for everything, but not now"`})
+    res.status(405).send({msg: `Oak's words echoed, "There's a time and a place for everything, but not now"`})
   }

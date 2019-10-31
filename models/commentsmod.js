@@ -12,14 +12,9 @@ exports.selectComments = (article_id , sort_by = 'created_at' , order = 'desc') 
         .where('article_id', '=', article[0].article_id)
         .orderBy(sort_by, order)
         .then(comments => {
-            if(comments.length===0){
-                return Promise.reject({
-                    status : 404,
-                    msg : `Oh no, this article has no comments!`
-                })
-            } else {
+            
                 return comments
-            }
+            
         })
     })
 }
