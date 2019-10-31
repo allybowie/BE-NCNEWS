@@ -5,7 +5,7 @@ exports.selectComments = (article_id , sort_by = 'created_at' , order = 'desc') 
     return connection.select('*').from('articles').where('article_id', '=', article_id.article_id)
     .then(article => {
         if(!article.length){
-            return Promise.reject({status: 404, msg: `If Article ${article_id.article_id} does not appear in our archives, it does not exist. Impossible... perhaps the achives are incomplete!`})
+            return Promise.reject({status: 404, msg: `If Article ${article_id.article_id} does not appear in our archives, it does not exist. Impossible... perhaps the archives are incomplete!`})
         }
         return connection.select("comment_id", "votes", "created_at", "author", "body")
         .from('comments')
