@@ -388,7 +388,7 @@ describe("/api", () => {
   });
 
   //POST Article
-  describe.only('/api/articles/:article_id/comments', () => {
+  describe('/api/articles/:article_id/comments', () => {
     it('POST 201: posts a new comment', () => {
       return request(app)
       .post('/api/articles/1/comments')
@@ -499,7 +499,7 @@ describe("/api", () => {
 
 
 // GET Comments by article ID   (NEED TO HANDLE ERROR FOR WHEN AN ARTICLE HAS NO COMMENTS)
-  describe('/api/articles/:article_id/comments', () => {
+  describe.only('/api/articles/:article_id/comments', () => {
     it('GET: 200 - returns an array of comments when valid article id is input', () => {
       return request(app)
         .get('/api/articles/1/comments')
@@ -556,7 +556,7 @@ describe("/api", () => {
         .get('/api/articles/29/comments')
         .expect(404)
         .then(({body: { msg }}) => {
-          expect(msg).to.equal("Article with ID '29' does not exist!")
+          expect(msg).to.equal("If Article 29 does not appear in our archives, it does not exist. Impossible... perhaps the achives are incomplete!")
         })
     });
     it('GET: 400 - returns an error when given an invalid article ID', () => {
@@ -565,6 +565,14 @@ describe("/api", () => {
         .expect(400)
         .then(({body: { msg }}) => {
           expect(msg).to.equal('Invalid input type - Text')
+        })
+    });
+    it('GET: 404 - returns an error when an existing article has no comments', () => {
+      return request(app)
+        .get('/api/articles/7/comments')
+        .expect(404)
+        .then(({body: { msg }}) => {
+          expect(msg).to.equal('Oh no, this article has no comments!')
         })
     });
   });

@@ -2,20 +2,25 @@ const connection = require('../db/connection')
 const { formatDates, formatComments, makeRefObj } = require('../db/utils/utils')
 
 exports.selectComments = (article_id , sort_by = 'created_at' , order = 'desc') => {
-
-    return connection.select("comment_id", "votes", "created_at", "author", "body")
-    .from('comments')
-    .where('article_id', '=', article_id.article_id)
-    .orderBy(sort_by, order)
-    .then(comments => {
-        if(comments.length===0){
-            return Promise.reject({
-                status : 404,
-                msg : `Article with ID '${article_id.article_id}' does not exist!`
-            })
-        } else {
-            return comments
+    return connection.select('*').from('articles').where('article_id', '=', article_id.article_id)
+    .then(article => {
+        if(!article.length){
+            return Promise.reject({status: 404, msg: `If Article ${article_id.article_id} does not appear in our archives, it does not exist. Impossible... perhaps the achives are incomplete!`})
         }
+        return connection.select("comment_id", "votes", "created_at", "author", "body")
+        .from('comments')
+        .where('article_id', '=', article[0].article_id)
+        .orderBy(sort_by, order)
+        .then(comments => {
+            if(comments.length===0){
+                return Promise.reject({
+                    status : 404,
+                    msg : `Oh no, this article has no comments!`
+                })
+            } else {
+                return comments
+            }
+        })
     })
 }
 
