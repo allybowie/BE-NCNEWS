@@ -78,7 +78,7 @@ describe("/api", () => {
   });
 
   //GET Articles
-  describe("/articles", () => {
+  describe.only("/articles", () => {
     it("GET: 200 - returns an array of all articles", () => {
       return request(app)
         .get("/api/articles")
@@ -231,6 +231,107 @@ describe("/api", () => {
             expect(article.author).to.equal("rogersop")
           })
           expect(firstArticle.article_id<lastArticle.article_id).to.equal(true)
+        });
+    });
+    it("GET: 200 - returns an array with an amount defined by a limit query", () => {
+      return request(app)
+        .get("/api/articles?limit=3")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(3)
+          expect(articles).to.eql([{
+            comment_count: '13',
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            body: 'I find this existence challenging',
+            topic: 'mitch',
+            votes: 100,
+            author: 'butter_bridge',
+            created_at: '2018-11-15T12:21:54.171Z'
+          },
+          {
+            comment_count: '0',
+            article_id: 2,
+            title: 'Sony Vaio; or, The Laptop',
+            body: 'Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.',
+            topic: 'mitch',
+            votes: 0,
+            author: 'icellusedkars',
+            created_at: '2014-11-16T12:21:54.171Z'
+          },
+          {
+            comment_count: '0',
+            article_id: 3,
+            title: 'Eight pug gifs that remind me of mitch',
+            body: 'some gifs',
+            topic: 'mitch',
+            votes: 0,
+            author: 'icellusedkars',
+            created_at: '2010-11-17T12:21:54.171Z'
+          }])
+        });
+    });
+    it("GET: 200 - returns an array with an amount defined by a limit query and page", () => {
+      return request(app)
+        .get("/api/articles?sort_by=article_id&&order=asc&&limit=3&&p=2")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(3)
+          expect(articles).to.eql([{
+            comment_count: '0',
+            article_id: 4,
+            title: 'Student SUES Mitch!',
+            body: 'We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages',
+            topic: 'mitch',
+            votes: 0,
+            author: 'rogersop',
+            created_at: '2006-11-18T12:21:54.171Z'
+          },
+          {
+            comment_count: '2',
+            article_id: 5,
+            title: 'UNCOVERED: catspiracy to bring down democracy',
+            body: 'Bastet walks amongst us, and the cats are taking arms!',
+            topic: 'cats',
+            votes: 0,
+            author: 'rogersop',
+            created_at: '2002-11-19T12:21:54.171Z'
+          },
+          {
+            comment_count: '1',
+            article_id: 6,
+            title: 'A',
+            body: 'Delicious tin of cat food',
+            topic: 'mitch',
+            votes: 0,
+            author: 'icellusedkars',
+            created_at: '1998-11-20T12:21:54.171Z'
+          }])
+        });
+    });
+    it("GET: 400 - returns a 400 error if a limit of less than 1 is entered", () => {
+      return request(app)
+        .get("/api/articles?limit=-3")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.eql("We cannot show you a negative number of articles")
+        });
+    });
+    it("GET: 400 - returns a 400 error if a page number of less than 1 is entered", () => {
+      return request(app)
+        .get("/api/articles?limit=-3&&p=0")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).to.eql("We cannot show you a negative number of articles")
+        });
+    });
+    it("GET: 400 - returns a 400 error if a page number is too high", () => {
+      return request(app)
+        .get("/api/articles?limit=3&&p=5")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          console.log(msg)
+          expect(msg).to.equal("You've reached the end of the articles!")
         });
     });
     it("GET: 400 - returns a 400 error if the queried author is not found", () => {
