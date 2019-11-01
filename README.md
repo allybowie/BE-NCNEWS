@@ -78,7 +78,7 @@ Now type the following template, but be sure to use your own username and create
 
 In the above template, instead of username type your Ubuntu username and instead of 'mysecretword123' choose your own password and be sure to wrap it in quotation marks. Use a simple password like ‘password’. DONT USE YOUR LOGIN PASSWORD !
 
-You can then exit out of psql by usin the command
+You can then exit out of psql by using the command
 
     \q
 
