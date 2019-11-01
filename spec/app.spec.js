@@ -330,7 +330,6 @@ describe("/api", () => {
         .get("/api/articles?limit=3&&p=5")
         .expect(404)
         .then(({ body: { msg } }) => {
-          console.log(msg)
           expect(msg).to.equal("You've reached the end of the articles!")
         });
     });

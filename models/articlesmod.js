@@ -79,8 +79,6 @@ exports.selectArticles = (query) => {
     })
   }
 
-
-
   return connection('articles')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count({comment_count : 'comments.comment_id'})
