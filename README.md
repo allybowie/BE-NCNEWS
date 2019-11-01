@@ -374,7 +374,7 @@ Any issues should be debugged with the following command
     PostgreSQL 11.4
 
 ### Versioning
-    We use GitHub for versioning. For the versions available, see the commits on this repository.
+    We use GitHub for version control. For the versions available, see the commits on this repository.
 
 ### Authors
     Alastair Bowie
