@@ -67,7 +67,7 @@ describe("/api", () => {
 
   //GET Hello There
   describe('/hellothere', () => {
-    it('GET: 200 -  returns "Hello there"', () => {
+    it('GET: 200 -  returns "General Kenobi"', () => {
       return request(app)
       .get('/api/hellothere')
       .expect(200)
