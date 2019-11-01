@@ -7,6 +7,11 @@ NC-News is an API written in JavaScript that contains various endpoints, display
 
 
 ## Getting Started
+
+First of all, ensure you're running an up to date version of Node.js
+
+    Minimum Version Requirements: Node.js: 10.11.0
+
 Fork the project and clone it into your teminal using 
 
     git clone <HTTPS>
@@ -79,6 +84,10 @@ You can then exit out of psql by usin the command
 
 
 Before testing or seeding, make sure you log into PostgreSQL using your login credentials (in your 'knexfile.js', add a 'username' and a 'password' key to each connection object in your custom config object; you do not need to do this if you are using a Mac)
+
+### Ensure your version of PostgreSQL is up to date
+
+    Minimum Version Requirements: PostgreSQL 11.4
 
 ---------------------------------------------------------------------------------------------------------------
 
