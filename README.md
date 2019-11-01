@@ -82,6 +82,66 @@ Before testing or seeding, make sure you log into PostgreSQL using your login cr
 
 ---------------------------------------------------------------------------------------------------------------
 
+## Creating Your Knexfile
+
+The knexfile.js will hold all the information about our database connections , which will use process environment information to determine which database we should connect to.
+
+We will now complete this file by following these instructions!
+
+### Create a file called
+    
+    knexfile.js
+
+At the top of this file, we will create a variable which will declare which environment on which we will run the app (we will have development, test and later a production environment - but for now, we'll just create the test and development environments).
+
+Enter the following line of code at the top of your knexfile.js
+
+    const ENV = process.env.NODE_ENV || 'development';
+
+
+This will set the ENV variable to whatever environment is determined by 'process.env.NODE_ENV', or it will default to 'development'.
+
+### Creating A Config Object
+
+Create the following variable in knexfile.js
+
+    const baseConfig = {
+        client: 'pg',
+        migrations: {
+            directory: './db/migrations'
+        },
+        seeds: {
+         directory: './db/seeds'
+        }
+        };
+
+This will connect you to your migrations and seeds directories, and determine your client.
+
+Now create the following 'customConfig' object; this will determine which database we are connecting to based on the ENV variable (when we are in the development environment, we will connect to the nc_news database, however if we are in the test environment, we will connect to the nc_news_test database. That way we can test our app without affecting our actual data)
+
+    const customConfig = {
+        development: {
+            connection: {
+                database: 'nc_news'
+            }
+        },
+        test: {
+            connection: {
+                 database: 'nc_news_test'
+            }
+        }
+    };
+
+Finally, we will export our environment objects using the following line at the bottom of the knexfile
+
+    module.exports = { ...customConfig[ENV], ...baseConfig };
+
+Due to the spread operator (...), all the keys in customConfig are pushed into an array, however by deconstructing the [ENV] from the array, we only export the connection that is relevent to the environment we are in.
+
+The spread operator also exports all the keys from our baseConfig object.
+
+---------------------------------------------------------------------------------------------------------------
+
 ## Seeding Your Database
 
 Seed your development data by running the command 'npm run setup-dbs'. This will populate your new Postgres database, which you can then connect to by using the command:
@@ -140,44 +200,38 @@ There are many ways to host applications like the one you have created. One of t
 
 On macOS:
 
-```bash
-brew tap heroku/brew && brew install heroku
-```
+    brew tap heroku/brew && brew install heroku
 
-...or Ubuntu:
+On Ubuntu:
 
-```bash
-sudo snap install --classic heroku
-```
+    sudo snap install --classic heroku
 
 ### 2. Create a Heroku App
 
-Log into Heroku using their command line interface:
+Log into Heroku using the following command in their command line interface
 
-```bash
-heroku login
-```
+    heroku login
 
 Create an app in an active git directory. Doing this in the folder where your server exists is a good start, as this is what you will be hosting.
+Use the following command
 
-```bash
-heroku create your-app-name
-```
+
+    heroku create your-app-name
+
 
 Here `your-app-name` should be the name you want to give your application. If you don't specify an app name, you'll get a random one which can sometimes be a bit iffy.
 
 This command will both create an app on Heroku for your account. It will also add a new `remote` to your git repository.
-Check this by looking at your git remotes:
+Check this by looking at your git remotes using the following command
 
-```bash
-git remote -v
-```
+    git remote -v
+
 
 ### 3. Push Your code up to Heroku
+Use the following command to push your code up to Heroku
 
-```bash
-git push heroku master
-```
+    git push heroku master
+
 
 ### 4. Creating a Hosted Database
 
@@ -273,38 +327,35 @@ It should check whether you're in production, and if you are, it should connect 
 
 In `listen.js`, make sure you take the PORT off the environment object if it's provided, like so:
 
-```js
-const { PORT = 9090 } = process.env;
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
-```
+    const { PORT = 9090 } = process.env;
+
+    app.listen(PORT, () => console.log(`Listening on ${PORT}...`));
+    ```
 
 ### 8. Add a start script
 
-Make sure your package.json has this as a start script:
+Make sure your package.json has this as a start script
 
-```json
-"start": "node listen.js",
-```
 
-Commit your changes, and push to heroku master.
+    "start": "node listen.js",
 
-```bash
-git push heroku master
-```
+
+Commit your changes, and push to heroku master using the following command
+
+    git push heroku master
 
 ### 9. Review Your App
+Use the following command
 
-```bash
-heroku open
-```
+    heroku open
 
-Any issues should be debugged with:
 
-```bash
-heroku logs --tail
+Any issues should be debugged with the following command
 
-```
+    heroku logs --tail
+
+
 ---------------------------------------------------------------------------------------------------------------
 ## Project Information
 
