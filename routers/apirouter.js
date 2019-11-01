@@ -5,7 +5,7 @@ const usersRouter = require('./usersrouter');
 const commentsRouter = require('./commentsrouter');
 const hellothereRouter = require('./hellorouter')
 const {getEndpoints} = require('../controllers/apicon')
-const {invalidMeth} = require('../psqlerrorlist')
+const {invalidMeth} = require('../errorhandlers')
 
 apiRouter.use("/topics", topicsRouter);
 

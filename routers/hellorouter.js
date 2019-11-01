@@ -1,5 +1,5 @@
 const hellothereRouter = require('express').Router();
-const {invalidMeth} = require('../psqlerrorlist');
+const {invalidMeth} = require('../errorhandlers');
 const {getHello} = require('../controllers/hellocontroller');
 
 hellothereRouter.route('/').get(getHello).all(invalidMeth);

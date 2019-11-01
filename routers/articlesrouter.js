@@ -2,7 +2,7 @@ const articlesRouter = require('express').Router();
 const {getArticles , getArticleByID , patchArticle} = require('../controllers/articlescon');
 const commentsRouter = require('./commentsrouter')
 const {getComments, postComment} = require('../controllers/commentscon')
-const {invalidMeth} = require('../psqlerrorlist')
+const {invalidMeth} = require('../errorhandlers')
 
 articlesRouter.route('/').get(getArticles).all(invalidMeth);
 

@@ -1,7 +1,7 @@
 const commentsRouter = require('express').Router();
 const {getComments} = require('../controllers/commentscon');
 const {deleteComment , patchComment} = require('../controllers/commentscon');
-const {invalidMeth} = require('../psqlerrorlist')
+const {invalidMeth} = require('../errorhandlers')
 
 commentsRouter.route('/').get(getComments).all(invalidMeth);
 
