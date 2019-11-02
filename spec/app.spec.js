@@ -78,10 +78,10 @@ describe("/api", () => {
   });
 
   //GET Articles
-  describe.only("/articles", () => {
+  describe("/articles", () => {
     it("GET: 200 - returns an array of all articles", () => {
       return request(app)
-        .get("/api/articles")
+        .get("/api/articles?limit=12")
         .expect(200)
         .then(({ body: { articles } }) => {
           expect(articles).to.be.an("array");
@@ -106,10 +106,18 @@ describe("/api", () => {
     });
     it("GET: 200 - returns an array of the correct amount of elements", () => {
       return request(app)
-        .get("/api/articles")
+        .get("/api/articles?limit=12")
         .expect(200)
         .then(({ body: { articles } }) => {
           expect(articles.length).to.equal(12);
+        });
+    });
+    it("GET: 200 - uses a default limit", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).to.equal(10);
         });
     });
     it("GET: 200 - returns an array of all articles with correct keys", () => {
@@ -144,7 +152,7 @@ describe("/api", () => {
     });
     it("GET: 200 - returns an array of all articles with correct comment counts ordered by dates, descending as default", () => {
       return request(app)
-        .get("/api/articles")
+        .get("/api/articles?limit=12")
         .expect(200)
         .then(({ body: { articles } }) => {
           const firstArticle = articles[0]
@@ -155,7 +163,7 @@ describe("/api", () => {
     });
     it("GET: 200 - returns an array of all articles with correct comment counts, that also match an ordered query (dates, ascending)", () => {
       return request(app)
-        .get("/api/articles?sort_by=created_at&&order=asc")
+        .get("/api/articles?sort_by=created_at&&order=asc&limit=12")
         .expect(200)
         .then(({ body: { articles } }) => {
           const firstArticle = articles[0]
@@ -184,7 +192,7 @@ describe("/api", () => {
     });
     it("GET: 200 - returns an array of correct length with correct comment counts depending on a topic query", () => {
       return request(app)
-        .get("/api/articles?topic=mitch")
+        .get("/api/articles?topic=mitch&limit=12")
         .expect(200)
         .then(({ body: { articles } }) => {
           expect(articles.length).to.equal(11)
@@ -204,8 +212,17 @@ describe("/api", () => {
       return request(app)
         .get("/api/articles?topic=mitch&&author=rogersop")
         .expect(200)
-        .then(({ body: { articles } }) => {
-          expect(articles.length).to.equal(2)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(2)
+        });
+    });
+    it("GET: 200 - returns an object with properties of articles and total_count", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch&&author=rogersop")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).to.equal(2)
+          expect(body.total_count).to.equal(12)
         });
     });
     it("GET: 200 - returns an array of correct length with correct comment counts depending on an topic & author query", () => {
